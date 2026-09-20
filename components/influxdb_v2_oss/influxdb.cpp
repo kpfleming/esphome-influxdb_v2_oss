@@ -21,7 +21,11 @@ void SensorField::publish(std::string &line) const {
 
   switch (this->format_) {
   case SensorFieldFormat::Float:
-    line += value_accuracy_to_string(state, this->accuracy_decimals_);
+    {
+      char payload[esphome::VALUE_ACCURACY_MAX_LEN];
+      size_t len = value_accuracy_to_buf(payload, state, static_cast<int8_t>(this->accuracy_decimals_));
+      line += payload;
+    }
     break;
   case SensorFieldFormat::Integer:
     line += str_sprintf("%ldi", std::lroundf(state));

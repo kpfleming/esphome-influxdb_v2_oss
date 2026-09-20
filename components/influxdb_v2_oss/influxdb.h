@@ -1,6 +1,5 @@
 #pragma once
 
-#include "esphome/core/defines.h"
 #include "esphome/core/component.h"
 #include "esphome/components/http_request/http_request.h"
 
@@ -66,7 +65,7 @@ protected:
   http_request::HttpRequestComponent *http_request_;
   std::string url_;
   std::string token_;
-  std::list<http_request::Header> headers_;
+  std::vector<http_request::Header> headers_;
 #ifdef USE_TIME
   time::RealTimeClock *clock_{nullptr};
   std::list<BacklogEntry> backlog_;
@@ -94,7 +93,13 @@ public:
   void set_sensor(const binary_sensor::BinarySensor *sensor) { this->sensor_ = sensor; }
 
   bool sensor_has_state() const override { return this->sensor_->has_state(); }
-  std::string sensor_object_id() const override { return this->sensor_->get_object_id(); }
+
+  std::string sensor_object_id() const override {
+    static char buffer_storage[OBJECT_ID_MAX_LEN];
+    std::span<char, OBJECT_ID_MAX_LEN> buffer(buffer_storage);
+    return this->sensor_->get_object_id_to(buffer);
+  }
+
   void publish(std::string &line) const override;
 
 protected:
@@ -121,7 +126,13 @@ public:
   void set_raw_state(bool val) { this->raw_state_ = val; }
 
   bool sensor_has_state() const override { return this->sensor_->has_state(); }
-  std::string sensor_object_id() const override { return this->sensor_->get_object_id(); }
+
+  std::string sensor_object_id() const override {
+    static char buffer_storage[OBJECT_ID_MAX_LEN];
+    std::span<char, OBJECT_ID_MAX_LEN> buffer(buffer_storage);
+    return this->sensor_->get_object_id_to(buffer);
+  }
+
   void publish(std::string &line) const override;
 
 protected:
@@ -139,7 +150,13 @@ public:
   void set_raw_state(bool val) { this->raw_state_ = val; }
 
   bool sensor_has_state() const override { return this->sensor_->has_state(); }
-  std::string sensor_object_id() const override { return this->sensor_->get_object_id(); }
+
+  std::string sensor_object_id() const override {
+    static char buffer_storage[OBJECT_ID_MAX_LEN];
+    std::span<char, OBJECT_ID_MAX_LEN> buffer(buffer_storage);
+    return this->sensor_->get_object_id_to(buffer);
+  }
+
   void publish(std::string &line) const override;
 
 protected:
